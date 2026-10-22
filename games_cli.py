@@ -14,6 +14,11 @@ every game_*.py file as a game."""
 
 import argparse
 
+# The version of CONTRACT.md, MAJOR.MINOR: what ERPLibre and the games
+# expect of each other. ERPLibre's tests compare its MAJOR with the one
+# ERPLibre was built against.
+CONTRACT_VERSION = "1.0"
+
 EPILOG = """\
 Without an option, the game opens the Stream Deck and plays. The gallery
 and the TODO menu run it after handing the deck over from the ERPLibre

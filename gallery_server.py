@@ -178,9 +178,12 @@ class GameHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=SCRIPT_DIR, **kwargs)
 
-    # The routes that act. Only the gallery page, by a same-origin fetch,
-    # or a client that is not a browser (no Sec-Fetch-Site) reaches them:
-    # a link opened from outside the browser comes as "none".
+    # The routes that act. They take only a request carrying ACTION_HEADER,
+    # which the gallery page and the GNOME extension send: a page of another
+    # site cannot add it without a CORS preflight the gallery never grants,
+    # and neither can a link, an <img> or a document renderer such as
+    # wkhtmltopdf, which sends no Sec-Fetch-Site.
+    ACTION_HEADER = "X-Stream-Deck-Gallery"
     ACTIONS = (
         "/launch/",
         "/stop",
@@ -198,12 +201,13 @@ class GameHandler(http.server.SimpleHTTPRequestHandler):
         Its routes act on a plain GET (launch a game, delete saves), so a
         request is served only from this machine, under its own name: a
         Host other than localhost or 127.0.0.1 at the gallery's port is a
-        page that rebound its own name to this address. A browser marks
-        the request any other page sends, even one it cannot read the
-        answer of, with Sec-Fetch-Site: an action takes only same-origin
-        or no header, the read-only /api/ routes also none (an address
-        typed or opened by the desktop), and the page any, since another
-        site cannot read it. Other paths are 404: nothing else is served."""
+        page that rebound its own name to this address. An action also
+        needs ACTION_HEADER set to 1. A browser marks the request any
+        other page sends with Sec-Fetch-Site: an action takes only
+        same-origin or no header, the read-only /api/ routes also none (an
+        address typed or opened by the desktop), and the page any, since
+        another site cannot read it. Other paths are 404: nothing else is
+        served."""
         port = self.server.server_address[1]
         if self.headers.get("Host", "") not in (
             "localhost:%d" % port,
@@ -215,6 +219,8 @@ class GameHandler(http.server.SimpleHTTPRequestHandler):
         if path.startswith(self.ACTIONS):
             if site not in (None, "same-origin"):
                 return 403, "request from another site"
+            if self.headers.get(self.ACTION_HEADER) != "1":
+                return 403, "missing %s header" % self.ACTION_HEADER
         elif path.startswith("/api/"):
             if site not in (None, "same-origin", "none"):
                 return 403, "request from another site"

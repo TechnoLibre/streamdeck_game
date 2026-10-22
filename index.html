@@ -369,13 +369,19 @@ document.getElementById('count').textContent = games.length;
 
 loadGames().then(renderGames);
 
+// A route that acts (launch, delete, clear) needs this header: the gallery
+// refuses it otherwise, so another site's page or a plain link cannot act.
+function act(url) {
+  return fetch(url, {headers: {'X-Stream-Deck-Gallery': '1'}});
+}
+
 // Launch game via local server
 function launchGame(gameId) {
   const toast = document.getElementById('toast');
   toast.textContent = 'Launching ' + gameId + '...';
   toast.style.display = 'block';
 
-  fetch('/launch/' + gameId)
+  act('/launch/' + gameId)
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (data.ok) {
@@ -420,7 +426,7 @@ function clearGameData(gameId) {
   toast.style.display = 'block';
   toast.style.background = '#d29922';
 
-  fetch('/api/saves/clear-game/' + gameId)
+  act('/api/saves/clear-game/' + gameId)
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (data.ok) {
@@ -574,20 +580,20 @@ function loadSaves() {
 }
 
 function deleteSave(filename) {
-  fetch('/api/saves/delete/' + filename)
+  act('/api/saves/delete/' + filename)
     .then(function() { loadSaves(); });
 }
 
 function clearGameSaves(game, files) {
   var promises = files.map(function(f) {
-    return fetch('/api/saves/delete/' + f.name);
+    return act('/api/saves/delete/' + f.name);
   });
   Promise.all(promises).then(function() { loadSaves(); });
 }
 
 function clearAllSaves() {
   if (!confirm('Delete ALL saved data? This cannot be undone.')) return;
-  fetch('/api/saves/clear-all')
+  act('/api/saves/clear-all')
     .then(function() { loadSaves(); });
 }
 </script>

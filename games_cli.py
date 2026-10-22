@@ -23,7 +23,7 @@ import shutil
 # The version of CONTRACT.md, MAJOR.MINOR: what ERPLibre and the games
 # expect of each other. ERPLibre's tests compare its MAJOR with the one
 # ERPLibre was built against.
-CONTRACT_VERSION = "1.2"
+CONTRACT_VERSION = "2.0"
 
 # What the games import beyond the standard library, next to them.
 REQUIREMENTS = os.path.join(

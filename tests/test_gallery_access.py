@@ -44,7 +44,7 @@ class TestGalleryAccess(unittest.TestCase):
         self.addCleanup(self.server.shutdown)
         self.addCleanup(self.server.server_close)
 
-    def get(self, path, host=None, site=None, method="GET"):
+    def get(self, path, host=None, site=None, method="GET", act=False):
         conn = http.client.HTTPConnection("127.0.0.1", self.port, timeout=10)
         self.addCleanup(conn.close)
         conn.putrequest(method, path, skip_host=True)
@@ -53,6 +53,8 @@ class TestGalleryAccess(unittest.TestCase):
         conn.putheader("Host", host)
         if site:
             conn.putheader("Sec-Fetch-Site", site)
+        if act:
+            conn.putheader("X-Stream-Deck-Gallery", "1")
         conn.endheaders()
         res = conn.getresponse()
         return res.status, dict(res.getheaders()), res.read()
@@ -78,7 +80,9 @@ class TestGalleryAccess(unittest.TestCase):
         with mock.patch.object(self.gallery, "_kill_current_game") as kill:
             for site in ("cross-site", "same-site"):
                 with self.subTest(site=site):
-                    status, _headers, body = self.get("/stop", site=site)
+                    status, _headers, body = self.get(
+                        "/stop", site=site, act=True
+                    )
                     self.assertEqual(403, status)
                     self.assertEqual(
                         "request from another site", json.loads(body)["error"]
@@ -91,7 +95,9 @@ class TestGalleryAccess(unittest.TestCase):
         saves = Path(os.environ["XDG_DATA_HOME"], "erplibre-home/streamdeck/save")
         saves.mkdir(parents=True)
         (saves / "djscratch_state.json").write_text("{}")
-        status, _headers, _body = self.get("/api/saves/clear-all", site="none")
+        status, _headers, _body = self.get(
+            "/api/saves/clear-all", site="none", act=True
+        )
         self.assertEqual(403, status)
         self.assertTrue((saves / "djscratch_state.json").exists())
         status, _headers, body = self.get("/api/saves", site="none")
@@ -128,12 +134,41 @@ class TestGalleryAccess(unittest.TestCase):
         for name in ("x/.hidden", ".hidden", "x/rec_1.wav"):
             with self.subTest(name=name):
                 self.assertEqual(
-                    404, self.get("/api/saves/delete/" + name)[0]
+                    404, self.get("/api/saves/delete/" + name, act=True)[0]
                 )
         self.assertTrue((saves / ".hidden").exists())
         self.assertTrue((saves / "rec_1.wav").exists())
-        self.assertEqual(200, self.get("/api/saves/delete/rec_1.wav")[0])
+        self.assertEqual(
+            200, self.get("/api/saves/delete/rec_1.wav", act=True)[0]
+        )
         self.assertFalse((saves / "rec_1.wav").exists())
+
+    def test_an_action_needs_the_gallery_header(self):
+        """A document renderer such as wkhtmltopdf, loading an <img> of a
+        report, sends no Sec-Fetch-Site and no custom header: it cannot
+        act. The gallery page and the extension send the header."""
+        saves = Path(os.environ["XDG_DATA_HOME"], "erplibre-home/streamdeck/save")
+        saves.mkdir(parents=True)
+        (saves / "rec_1.wav").write_text("x")
+        status, _headers, body = self.get("/api/saves/clear-all")
+        self.assertEqual(403, status)
+        self.assertEqual(
+            "missing X-Stream-Deck-Gallery header", json.loads(body)["error"]
+        )
+        self.assertTrue((saves / "rec_1.wav").exists())
+        status, _headers, body = self.get("/api/saves/clear-all", act=True)
+        self.assertEqual((200, 1), (status, json.loads(body)["deleted_count"]))
+        self.assertEqual(200, self.get("/api/games")[0])
+
+    def test_the_page_sends_the_header_on_every_action(self):
+        page = (ROOT / "index.html").read_text(encoding="utf-8")
+        actions = ("/launch/", "/stop", "/api/saves/delete/",
+                   "/api/saves/clear-game/", "/api/saves/clear-all",
+                   "/api/restart")
+        for line in page.splitlines():
+            if "fetch(" in line and any(a in line for a in actions):
+                self.fail("an action fetched without act(): " + line.strip())
+        self.assertIn("'X-Stream-Deck-Gallery': '1'", page)
 
     def test_main_listens_on_this_machine_only(self):
         with mock.patch.object(

@@ -1,6 +1,6 @@
 # Contract between the games and ERPLibre
 
-**Contract version: 1.2**
+**Contract version: 2.0**
 
 The games run on their own (see `README.md`). ERPLibre also clones this
 repository at `script/stream_deck/games/`, by Google Repo or by
@@ -39,12 +39,15 @@ tests of both sides check it.
    answers 403 to a request whose Host is not `localhost` or `127.0.0.1`
    at that port, and to one a browser marks with `Sec-Fetch-Site`: a
    route that acts takes only `same-origin` or no header, a read-only
-   `/api/` route also `none`. It serves no file but its page. The
-   extension sends no `Sec-Fetch-Site` and relies on:
+   `/api/` route also `none`. A route that acts also needs the header
+   `X-Stream-Deck-Gallery: 1`, which neither another site's page nor a
+   link can send. It serves no file but its page. The extension sends no
+   `Sec-Fetch-Site` and relies on:
    - `GET /api/games`: a JSON array of the `--meta` objects, each with
      `id` added, and `saves` when the save directory holds files of that
      game;
-   - `GET /launch/<id>`: 2xx when started; otherwise
+   - `GET /launch/<id>`, with `X-Stream-Deck-Gallery: 1` (403 without
+     it): 2xx when started; otherwise
      `{"error": "<one line>"}`, with 403 when the `GAMES` setting refuses
      the games, 404 for an unknown id and 503 when no terminal can run it.
 
@@ -81,6 +84,8 @@ required `--meta` key, a moved or renamed file, a new exit code, a route
 that changes its answer. An optional addition bumps MINOR. ERPLibre's tests
 fail when the MAJOR it records differs from this one.
 
+- **2.0:** a route that acts, `/launch/<id>` included, needs the header
+  `X-Stream-Deck-Gallery: 1`; a client that does not send it gets 403.
 - **1.2:** the gallery listens on 127.0.0.1 only, refuses a foreign Host
   or a request from another site, and serves no file but its page.
 - **1.1:** the saves move out of the repository to `games_cli.save_dir()`;

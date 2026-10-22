@@ -22,6 +22,7 @@ import signal
 import subprocess
 import sys
 import threading
+import urllib.parse
 import webbrowser
 
 PORT = 8042
@@ -177,7 +178,63 @@ class GameHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=SCRIPT_DIR, **kwargs)
 
+    # The routes that act. Only the gallery page, by a same-origin fetch,
+    # or a client that is not a browser (no Sec-Fetch-Site) reaches them:
+    # a link opened from outside the browser comes as "none".
+    ACTIONS = (
+        "/launch/",
+        "/stop",
+        "/api/saves/delete/",
+        "/api/saves/clear-game/",
+        "/api/saves/clear-all",
+        "/api/restart",
+    )
+    # The only files served: the page, self-contained.
+    PAGES = ("/", "/index.html")
+
+    def _refusal(self):
+        """None for a request the gallery serves; else (status, why).
+
+        Its routes act on a plain GET (launch a game, delete saves), so a
+        request is served only from this machine, under its own name: a
+        Host other than localhost or 127.0.0.1 at the gallery's port is a
+        page that rebound its own name to this address. A browser marks
+        the request any other page sends, even one it cannot read the
+        answer of, with Sec-Fetch-Site: an action takes only same-origin
+        or no header, the read-only /api/ routes also none (an address
+        typed or opened by the desktop), and the page any, since another
+        site cannot read it. Other paths are 404: nothing else is served."""
+        port = self.server.server_address[1]
+        if self.headers.get("Host", "") not in (
+            "localhost:%d" % port,
+            "127.0.0.1:%d" % port,
+        ):
+            return 403, "unknown Host"
+        path = urllib.parse.urlsplit(self.path).path
+        site = self.headers.get("Sec-Fetch-Site")
+        if path.startswith(self.ACTIONS):
+            if site not in (None, "same-origin"):
+                return 403, "request from another site"
+        elif path.startswith("/api/"):
+            if site not in (None, "same-origin", "none"):
+                return 403, "request from another site"
+        elif path not in self.PAGES:
+            return 404, "not found"
+        return None
+
+    def do_HEAD(self):
+        refusal = self._refusal()
+        if refusal:
+            self.send_response(refusal[0])
+            self.end_headers()
+            return
+        super().do_HEAD()
+
     def do_GET(self):
+        refusal = self._refusal()
+        if refusal:
+            self._json_response({"error": refusal[1]}, refusal[0])
+            return
         if self.path == "/api/games":
             self._json_response(_game_cache)
             return
@@ -210,7 +267,6 @@ class GameHandler(http.server.SimpleHTTPRequestHandler):
     def _json_response(self, data, status=200):
         self.send_response(status)
         self.send_header("Content-Type", "application/json")
-        self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
         self.wfile.write(json.dumps(data).encode())
 
@@ -242,10 +298,13 @@ class GameHandler(http.server.SimpleHTTPRequestHandler):
         })
 
     def _delete_save(self, filename):
-        """Delete a specific save file."""
+        """Delete one save file, named by itself: a name with a directory
+        part, or a dotfile, which the list and the clear routes skip, is
+        not found."""
         save_dir = games_cli.save_dir()
-        path = os.path.join(save_dir, os.path.basename(filename))
-        if os.path.isfile(path) and not filename.startswith("."):
+        name = os.path.basename(filename)
+        path = os.path.join(save_dir, name)
+        if name == filename and not name.startswith(".") and os.path.isfile(path):
             os.remove(path)
             print(f"Deleted: {path}")
             self._json_response({"ok": True, "deleted": filename})
@@ -319,7 +378,6 @@ class GameHandler(http.server.SimpleHTTPRequestHandler):
         if refus:
             self.send_response(403)
             self.send_header("Content-Type", "application/json")
-            self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
             self.wfile.write(json.dumps({"error": refus}).encode())
             return
@@ -328,7 +386,6 @@ class GameHandler(http.server.SimpleHTTPRequestHandler):
         if not os.path.isfile(game_file):
             self.send_response(404)
             self.send_header("Content-Type", "application/json")
-            self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
             self.wfile.write(
                 json.dumps({"error": f"Game not found: {game_id}"}).encode()
@@ -365,7 +422,6 @@ class GameHandler(http.server.SimpleHTTPRequestHandler):
         # 503 when no terminal could start: a 2xx means the game started.
         self.send_response(503 if "error" in status else 200)
         self.send_header("Content-Type", "application/json")
-        self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
         self.wfile.write(json.dumps(status).encode())
 
@@ -410,7 +466,8 @@ def main():
     print(f"Found {len(_game_cache)} games")
 
     handler = GameHandler
-    with http.server.HTTPServer(("", PORT), handler) as httpd:
+    # This machine only: the routes act on a plain GET.
+    with http.server.HTTPServer(("127.0.0.1", PORT), handler) as httpd:
         url = f"http://localhost:{PORT}"
         print(f"Stream Deck Game Gallery: {url}")
         print("Press Ctrl+C to stop.")

@@ -1,6 +1,6 @@
 # Contract between the games and ERPLibre
 
-**Contract version: 1.1**
+**Contract version: 1.2**
 
 The games run on their own (see `README.md`). ERPLibre also clones this
 repository at `script/stream_deck/games/`, by Google Repo or by
@@ -34,9 +34,13 @@ tests of both sides check it.
 4. **Playing.** Without an option the game opens the first Stream Deck,
    plays, and exits when the player quits. It never takes the deck lock:
    the hand-over holds it around the game and passes its exit code on.
-5. **Gallery.** `gallery_server.py` serves on port 8042 and, inside
-   ERPLibre, launches every game through ERPLibre's hand-over. The
-   extension relies on:
+5. **Gallery.** `gallery_server.py` serves on 127.0.0.1, port 8042, and,
+   inside ERPLibre, launches every game through ERPLibre's hand-over. It
+   answers 403 to a request whose Host is not `localhost` or `127.0.0.1`
+   at that port, and to one a browser marks with `Sec-Fetch-Site`: a
+   route that acts takes only `same-origin` or no header, a read-only
+   `/api/` route also `none`. It serves no file but its page. The
+   extension sends no `Sec-Fetch-Site` and relies on:
    - `GET /api/games`: a JSON array of the `--meta` objects, each with
      `id` added, and `saves` when the save directory holds files of that
      game;
@@ -77,6 +81,8 @@ required `--meta` key, a moved or renamed file, a new exit code, a route
 that changes its answer. An optional addition bumps MINOR. ERPLibre's tests
 fail when the MAJOR it records differs from this one.
 
+- **1.2:** the gallery listens on 127.0.0.1 only, refuses a foreign Host
+  or a request from another site, and serves no file but its page.
 - **1.1:** the saves move out of the repository to `games_cli.save_dir()`;
   `requirements.txt` lists what the games import; the gallery runs without
   ERPLibre, and answers 503 instead of 200 when no terminal can run a

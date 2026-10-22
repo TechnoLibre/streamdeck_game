@@ -130,10 +130,12 @@ python3 -m unittest discover -s tests
 ## Inside ERPLibre
 
 [ERPLibre](https://github.com/ERPLibre/ERPLibre) Home clones this repository
-at `script/stream_deck/games/`, pinned on a tag, and launches the games from
-its TODO menu, its make targets and its GNOME extension, handing the deck
-over from its own deck service. Its `doc/streamdeck_game.md` describes that
-side; `CONTRACT.md` here states what both sides expect of each other.
+at `script/stream_deck/games/` and follows its `main` branch: a commit
+pushed here reaches ERPLibre checkouts at their next update. ERPLibre
+launches the games from its TODO menu, its make targets and its GNOME
+extension; the menu and the gallery first take the deck over from its own
+deck service. Its `doc/streamdeck_game.md` describes that side;
+`CONTRACT.md` here states what both sides expect of each other.
 
 ## License
 
@@ -143,10 +145,12 @@ AGPL-3.0 or later, see `LICENSE`.
 ## Dans ERPLibre
 
 [ERPLibre](https://github.com/ERPLibre/ERPLibre) Home clone ce dépôt dans
-`script/stream_deck/games/`, épinglé sur une étiquette, et lance les jeux
-depuis son menu TODO, ses cibles make et son extension GNOME, en reprenant
-le deck à son propre service. Son `doc/streamdeck_game.md` décrit ce côté ;
-`CONTRACT.md` dit ici ce que chaque côté attend de l'autre.
+`script/stream_deck/games/` et suit sa branche `main` : un commit poussé ici
+atteint les checkouts d'ERPLibre à leur prochaine mise à jour. ERPLibre
+lance les jeux depuis son menu TODO, ses cibles make et son extension
+GNOME ; le menu et la galerie reprennent d'abord le deck à son propre
+service. Son `doc/streamdeck_game.md` décrit ce côté ; `CONTRACT.md` dit ici
+ce que chaque côté attend de l'autre.
 
 ## Licence
 

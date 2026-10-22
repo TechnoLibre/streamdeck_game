@@ -64,10 +64,12 @@ python3 -m unittest discover -s tests
 ## Inside ERPLibre
 
 [ERPLibre](https://github.com/ERPLibre/ERPLibre) Home clones this repository
-at `script/stream_deck/games/`, pinned on a tag, and launches the games from
-its TODO menu, its make targets and its GNOME extension, handing the deck
-over from its own deck service. Its `doc/streamdeck_game.md` describes that
-side; `CONTRACT.md` here states what both sides expect of each other.
+at `script/stream_deck/games/` and follows its `main` branch: a commit
+pushed here reaches ERPLibre checkouts at their next update. ERPLibre
+launches the games from its TODO menu, its make targets and its GNOME
+extension; the menu and the gallery first take the deck over from its own
+deck service. Its `doc/streamdeck_game.md` describes that side;
+`CONTRACT.md` here states what both sides expect of each other.
 
 ## License
 

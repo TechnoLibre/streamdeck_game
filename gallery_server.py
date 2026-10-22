@@ -26,6 +26,10 @@ import webbrowser
 
 PORT = 8042
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+# games_cli sits next to the gallery; a gallery loaded by its path, as the
+# tests do, does not have SCRIPT_DIR on sys.path yet.
+sys.path.insert(0, SCRIPT_DIR)
+import games_cli  # noqa: E402
 # script/stream_deck/games/ -> the repository root, three levels up.
 ERPLIBRE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "..", ".."))
 # Hands the deck over from the service to a game, then back.
@@ -83,8 +87,8 @@ def _scan_games():
             if result.returncode == 0 and result.stdout.strip():
                 meta = json.loads(result.stdout.strip())
                 meta["id"] = game_id
-                # Check if game has save files
-                save_dir = os.path.join(SCRIPT_DIR, "save")
+                # Check if game has save files; main() moved the old ones.
+                save_dir = games_cli.save_path()
                 if os.path.isdir(save_dir):
                     has_saves = any(
                         game_id in f for f in os.listdir(save_dir)
@@ -202,8 +206,8 @@ class GameHandler(http.server.SimpleHTTPRequestHandler):
         self.wfile.write(json.dumps(data).encode())
 
     def _list_saves(self):
-        """List all saved files in save/ directory."""
-        save_dir = os.path.join(SCRIPT_DIR, "save")
+        """List the files of the save directory, games_cli.save_dir()."""
+        save_dir = games_cli.save_dir()
         files = []
         if os.path.isdir(save_dir):
             for f in sorted(os.listdir(save_dir)):
@@ -230,7 +234,7 @@ class GameHandler(http.server.SimpleHTTPRequestHandler):
 
     def _delete_save(self, filename):
         """Delete a specific save file."""
-        save_dir = os.path.join(SCRIPT_DIR, "save")
+        save_dir = games_cli.save_dir()
         path = os.path.join(save_dir, os.path.basename(filename))
         if os.path.isfile(path) and not filename.startswith("."):
             os.remove(path)
@@ -254,7 +258,7 @@ class GameHandler(http.server.SimpleHTTPRequestHandler):
 
     def _clear_game_saves(self, game_id):
         """Delete all save files for a specific game."""
-        save_dir = os.path.join(SCRIPT_DIR, "save")
+        save_dir = games_cli.save_dir()
         count = 0
         if os.path.isdir(save_dir):
             for f in os.listdir(save_dir):
@@ -270,7 +274,7 @@ class GameHandler(http.server.SimpleHTTPRequestHandler):
 
     def _clear_all_saves(self):
         """Delete all save files."""
-        save_dir = os.path.join(SCRIPT_DIR, "save")
+        save_dir = games_cli.save_dir()
         count = 0
         if os.path.isdir(save_dir):
             for f in os.listdir(save_dir):
@@ -390,6 +394,8 @@ def main():
     if refus:
         print(refus, file=sys.stderr)
         sys.exit(1)
+    # Moves the saves of the former save/ before the scan reads them.
+    games_cli.save_dir()
     print("Scanning games...")
     _game_cache = _scan_games()
     print(f"Found {len(_game_cache)} games")

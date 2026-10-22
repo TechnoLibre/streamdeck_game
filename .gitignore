@@ -219,6 +219,6 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# Game saves: save/ stays in the tree, what the games write in it does not
-save/*
-!save/.gitkeep
+# Saves written next to the games before games_cli.save_dir(); the games
+# move them out on their next run.
+save/

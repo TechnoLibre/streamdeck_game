@@ -120,6 +120,7 @@ def run_without_hardware(script, *args, fakes=None):
             XDG_RUNTIME_DIR=run_dir,
             XDG_CONFIG_HOME=os.path.join(tmp, "config"),
             XDG_CACHE_HOME=os.path.join(tmp, "cache"),
+            XDG_DATA_HOME=os.path.join(tmp, "data"),
             HOME=os.path.join(tmp, "home"),
             HARDWARE_WITNESS=witness,
         )
@@ -178,16 +179,15 @@ class TestLayout(unittest.TestCase):
                 imported = set(IMPORT.findall(game.read_text("utf-8")))
                 self.assertEqual(set(), imported & siblings)
 
-    def test_games_cli_is_not_a_game_and_imports_argparse_only(self):
+    def test_games_cli_is_not_a_game_and_imports_the_stdlib_only(self):
         cli = ROOT / "games_cli.py"
         self.assertNotIn(cli, games())
         imported = set(IMPORT.findall(cli.read_text(encoding="utf-8")))
-        self.assertEqual({"argparse"}, imported)
+        self.assertEqual({"argparse", "os", "shutil"}, imported)
 
-    def test_the_gallery_its_page_and_the_save_directory_exist(self):
+    def test_the_gallery_and_its_page_exist(self):
         self.assertTrue((ROOT / "gallery_server.py").is_file())
         self.assertTrue((ROOT / "index.html").is_file())
-        self.assertTrue((ROOT / "save" / ".gitkeep").is_file())
 
 
 class TestContractVersion(unittest.TestCase):

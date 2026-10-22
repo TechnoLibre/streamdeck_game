@@ -1,6 +1,6 @@
 # Contract between the games and ERPLibre
 
-**Contract version: 1.0**
+**Contract version: 1.1**
 
 This repository is cloned by ERPLibre at `script/stream_deck/games/`, by
 Google Repo or by `install_erplibre_home.sh --stream-deck`. This file states
@@ -35,16 +35,21 @@ version, and ERPLibre records the one it was built against in
 5. **Gallery.** `gallery_server.py` serves on port 8042 and launches every
    game through ERPLibre's hand-over. The extension relies on:
    - `GET /api/games`: a JSON array of the `--meta` objects, each with
-     `id` added, and `saves` when `save/` holds files of that game;
+     `id` added, and `saves` when the save directory holds files of that
+     game;
    - `GET /launch/<id>`: 2xx when started; otherwise
      `{"error": "<one line>"}`, with 403 when the `GAMES` setting refuses
      the games and 404 for an unknown id.
 
    Its other routes (`/stop`, `/api/restart`, `/api/saves…`) serve its own
    page only.
-6. **Saves.** A game that keeps state writes it under `save/` at the
-   repository root; ERPLibre never reads it. The repository ignores
-   `save/*` and keeps `save/.gitkeep`.
+6. **Saves.** A game that keeps state writes it in
+   `games_cli.save_dir()`: `$XDG_DATA_HOME/erplibre-home/streamdeck/save/`,
+   `~/.local/share` standing for an unset XDG_DATA_HOME. It lies outside
+   both repositories: a clone, `repo sync` or `git clean` never touches it.
+   Files left in the former `save/` next to the games move there on the
+   next run of a game that keeps state or of the gallery, never over a file
+   already there. ERPLibre never reads the saves.
 
 ## What the games rely on
 
@@ -65,3 +70,6 @@ A change that a reader on the other side can see bumps MAJOR: a new
 required `--meta` key, a moved or renamed file, a new exit code, a route
 that changes its answer. An optional addition bumps MINOR. ERPLibre's tests
 fail when the MAJOR it records differs from this one.
+
+- **1.1:** the saves move out of the repository to `games_cli.save_dir()`.
+- **1.0:** the first version.

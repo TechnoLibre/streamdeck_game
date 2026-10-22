@@ -868,10 +868,7 @@ class DJScratch:
         self.sam_start_time = 0
         # Per-channel sample WAV (used by Mic style on deck 1)
         self.channel_samples = {}  # channel_idx -> wav_path
-        self.save_dir = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), "save"
-        )
-        os.makedirs(self.save_dir, exist_ok=True)
+        self.save_dir = games_cli.save_dir()
         if sampler_deck:
             sr, sc = sampler_deck.key_layout()
             self.sampler_cols = sc
@@ -1821,8 +1818,10 @@ class DJScratch:
             self.stutter_rate = state.get("stutter_rate", self.stutter_rate)
             self.reverse_on = state.get("reverse_on", self.reverse_on)
             self.dial_modes = state.get("dial_modes", self.dial_modes)
+            # A recorded path predates a move of the saves: saved_path()
+            # finds the file in the save directory.
             self.channel_samples = {
-                int(k): v
+                int(k): games_cli.saved_path(v)
                 for k, v in state.get("channel_samples", {}).items()
             }
             # Restore sampler map
@@ -1830,6 +1829,8 @@ class DJScratch:
             for k, v in state.get("sampler_map", {}).items():
                 if v and v[0] == "wav":
                     # Check WAV file still exists
+                    if len(v) > 1:
+                        v = [v[0], games_cli.saved_path(v[1]), *v[2:]]
                     if len(v) > 1 and os.path.isfile(v[1]):
                         self.sampler_map[int(k)] = tuple(v)
                 elif v:

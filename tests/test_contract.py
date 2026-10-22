@@ -185,9 +185,12 @@ class TestLayout(unittest.TestCase):
         imported = set(IMPORT.findall(cli.read_text(encoding="utf-8")))
         self.assertEqual({"argparse", "os", "shutil"}, imported)
 
-    def test_the_gallery_and_its_page_exist(self):
+    def test_the_gallery_its_page_and_the_requirements_exist(self):
         self.assertTrue((ROOT / "gallery_server.py").is_file())
         self.assertTrue((ROOT / "index.html").is_file())
+        wanted = (ROOT / "requirements.txt").read_text(encoding="utf-8")
+        self.assertIn("streamdeck", wanted.lower().split())
+        self.assertRegex(wanted, r"(?m)^Pillow")
 
 
 class TestContractVersion(unittest.TestCase):

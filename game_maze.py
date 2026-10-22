@@ -25,7 +25,7 @@ try:
     from StreamDeck.ImageHelpers import PILHelper
     from StreamDeck.Transport.Transport import TransportError
 except ImportError as e:
-    print("pip install -r script/stream_deck/requirements.txt")
+    print(games_cli.install_hint())
     raise e
 
 GAME_META = {

@@ -8,8 +8,8 @@ Serves index.html and handles /launch/<game_id> requests
 to start games in a terminal. Kills previous game terminal
 before opening a new one.
 
-Usage: make streamdeck_gallery, which runs it under .venv.streamdeck.
-Then open http://localhost:8042
+Usage: python gallery_server.py, under the venv that has requirements.txt;
+inside ERPLibre, make streamdeck_gallery. Then open http://localhost:8042
 """
 
 import argparse
@@ -30,9 +30,11 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 # tests do, does not have SCRIPT_DIR on sys.path yet.
 sys.path.insert(0, SCRIPT_DIR)
 import games_cli  # noqa: E402
-# script/stream_deck/games/ -> the repository root, three levels up.
+# Cloned by ERPLibre at script/stream_deck/games/, the games find its root
+# three levels up. Without ERPLibre, neither file below exists: no GAMES
+# setting refuses the games, and a game runs without a hand-over.
 ERPLIBRE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "..", ".."))
-# Hands the deck over from the service to a game, then back.
+# Hands the deck over from the ERPLibre Home service to a game, then back.
 HANDOVER = os.path.join(
     ERPLIBRE_DIR, "script", "install", "erplibre_home_handover.sh"
 )
@@ -42,11 +44,15 @@ SETTINGS_LIB = os.path.join(
 
 
 def _games_refusal():
-    """None quand GAMES active les jeux ; sinon la ligne qui dit pourquoi.
-    Le fichier se relit à chaque appel, par la bibliothèque shell qui le
-    lit pour make et la passation : un changement compte sans redémarrer
-    la galerie. Une lecture qui échoue (bash absent, délai dépassé) refuse
-    aussi, comme une valeur inconnue : la ligne nomme l'échec."""
+    """None when the games may run; else the line that says why.
+
+    Inside ERPLibre, the GAMES setting decides, read at each call through
+    ERPLibre's settings library, the one make and the hand-over read: a
+    change counts without restarting the gallery. A read that fails (bash
+    missing, timeout) refuses too, like an unknown value, and the line names
+    the failure. Without ERPLibre, there is no setting: None."""
+    if not os.path.isfile(SETTINGS_LIB):
+        return None
     try:
         fini = subprocess.run(
             [
@@ -144,9 +150,10 @@ def _game_bash_cmd(game_file):
     PATH. Every path is quoted for bash. The loop restarts the game when the
     user types "r" + Enter at the end-of-game prompt, which avoids
     re-picking it from the gallery; any other answer, or a closed stdin,
-    ends it. The whole loop runs inside one erplibre_home_handover.sh: the
-    deck service stops before the first game and comes back once, when the
-    loop ends, not between two rounds.
+    ends it. Inside ERPLibre, the whole loop runs inside one
+    erplibre_home_handover.sh: the deck service stops before the first game
+    and comes back once, when the loop ends, not between two rounds. Without
+    ERPLibre, the loop runs on its own, from the games' directory.
     """
     loop = (
         f"while true; do "
@@ -158,6 +165,8 @@ def _game_bash_cmd(game_file):
         f'if [ "$ans" != "r" ] && [ "$ans" != "R" ]; then break; fi; '
         f"done"
     )
+    if not os.path.isfile(HANDOVER):
+        return f"cd {shlex.quote(SCRIPT_DIR)} && bash -c {shlex.quote(loop)}"
     return (
         f"cd {shlex.quote(ERPLIBRE_DIR)} && "
         f"{shlex.quote(HANDOVER)} bash -c {shlex.quote(loop)}"
@@ -353,7 +362,8 @@ class GameHandler(http.server.SimpleHTTPRequestHandler):
                     "error": "No terminal found (tried gnome-terminal, xterm)"
                 }
 
-        self.send_response(200)
+        # 503 when no terminal could start: a 2xx means the game started.
+        self.send_response(503 if "error" in status else 200)
         self.send_header("Content-Type", "application/json")
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
@@ -369,9 +379,8 @@ def parser():
     does not know, before main() scans the games, listens on PORT or opens
     a browser."""
     return argparse.ArgumentParser(
-        prog="python script/stream_deck/games/gallery_server.py",
         description=(
-            "Stream Deck game gallery (make streamdeck_gallery).\n"
+            "Stream Deck game gallery.\n"
             "Without an option, it serves the gallery on"
             f" http://localhost:{PORT},\nopens it in the browser and"
             " launches the game picked there."
@@ -379,8 +388,8 @@ def parser():
         epilog=(
             "Exit codes:\n"
             "  0  stopped by Ctrl+C, or --help\n"
-            "  1  GAMES is not on in erplibre-home/streamdeck.conf, the port"
-            " is taken,\n     or an unexpected error\n"
+            "  1  the port is taken, an unexpected error, or, inside"
+            " ERPLibre,\n     GAMES is not on in erplibre-home/streamdeck.conf\n"
             "  2  a bad option"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,

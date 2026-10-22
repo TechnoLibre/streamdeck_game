@@ -1,0 +1,4 @@
+# What the games import beyond the standard library: the Stream Deck
+# library and Pillow, which draws the keys.
+streamdeck
+Pillow>=9.0.0

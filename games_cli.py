@@ -10,7 +10,8 @@ answers it itself once GAME_META is defined, with that JSON on stdout,
 which is what the gallery reads. Only the standard library is imported.
 
 save_dir() is where a game keeps its saves, and saved_path() finds a file
-a game recorded by its path after the saves moved there.
+a game recorded by its path after the saves moved there. install_hint() is
+the pip line a game prints when PIL or the Stream Deck library is missing.
 
 The name does not match game_*.py: the gallery and the TODO menu list
 every game_*.py file as a game."""
@@ -24,15 +25,21 @@ import shutil
 # ERPLibre was built against.
 CONTRACT_VERSION = "1.1"
 
+# What the games import beyond the standard library, next to them.
+REQUIREMENTS = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "requirements.txt"
+)
+
 # Where the saves were kept before save_dir(): save/ next to the games.
 LEGACY_SAVE_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "save"
 )
 
 EPILOG = """\
-Without an option, the game opens the Stream Deck and plays. The gallery
-and the TODO menu run it after handing the deck over from the ERPLibre
-Home service, and give it back when the game ends."""
+Without an option, the game opens the Stream Deck and plays until the
+player quits. The gallery (gallery_server.py) runs it in a terminal.
+Inside ERPLibre, the gallery and the TODO menu first stop the ERPLibre
+Home deck service, which takes the deck back when the game ends."""
 
 
 def parser(doc):
@@ -50,6 +57,11 @@ def parser(doc):
         help="print the game's gallery metadata as JSON and exit",
     )
     return p
+
+
+def install_hint():
+    """The command that installs what the games import."""
+    return "pip install -r " + REQUIREMENTS
 
 
 def save_path():

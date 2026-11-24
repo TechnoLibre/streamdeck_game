@@ -1,6 +1,6 @@
 # Contract between the games and ERPLibre
 
-**Contract version: 2.0**
+**Contract version: 3.0**
 
 The games run on their own (see `README.md`). ERPLibre also clones this
 repository at `script/stream_deck/games/`, by Google Repo or by
@@ -49,7 +49,8 @@ tests of both sides check it.
    - `GET /launch/<id>`, with `X-Stream-Deck-Gallery: 1` (403 without
      it): 2xx when started; otherwise
      `{"error": "<one line>"}`, with 403 when the `GAMES` setting refuses
-     the games, 404 for an unknown id and 503 when no terminal can run it.
+     the games or ERPLibre lacks the hand-over, 404 for an unknown id and
+     503 when no terminal can run it.
 
    Its other routes (`/stop`, `/api/restart`, `/api/saves…`) serve its own
    page only.
@@ -64,10 +65,13 @@ tests of both sides check it.
 ## What the games rely on
 
 1. Inside ERPLibre, the checkout root is three directories above this
-   repository. When `script/install/erplibre_home_handover.sh` is not
+   repository. When `script/install/erplibre_home_settings.sh` is not
    there, the games run on their own: the gallery reads no `GAMES` setting
-   and runs a game without a hand-over.
-2. `script/install/erplibre_home_handover.sh <command> [arguments…]` runs
+   and runs a game without a hand-over. When it is there and
+   `script/install/erplibre_home_streamdeck_handover.sh` is not, the
+   gallery refuses the games: it neither starts nor launches one.
+2. `script/install/erplibre_home_streamdeck_handover.sh <command>
+   [arguments…]`, named after `erplibre-home-streamdeck.service`, runs
    the command under the deck lock, held as program `game`, and exits with
    its code; it exits 4 without running it when `GAMES` is not on, and 2
    when the deck is already held.
@@ -84,6 +88,10 @@ required `--meta` key, a moved or renamed file, a new exit code, a route
 that changes its answer. An optional addition bumps MINOR. ERPLibre's tests
 fail when the MAJOR it records differs from this one.
 
+- **3.0:** the hand-over is
+  `script/install/erplibre_home_streamdeck_handover.sh`, formerly
+  `erplibre_home_handover.sh`; inside ERPLibre, the gallery refuses the
+  games when it is missing instead of running them without it.
 - **2.0:** a route that acts, `/launch/<id>` included, needs the header
   `X-Stream-Deck-Gallery: 1`; a client that does not send it gets 403.
 - **1.2:** the gallery listens on 127.0.0.1 only, refuses a foreign Host

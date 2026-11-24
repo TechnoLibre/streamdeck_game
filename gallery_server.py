@@ -35,9 +35,10 @@ import games_cli  # noqa: E402
 # three levels up. Without ERPLibre, neither file below exists: no GAMES
 # setting refuses the games, and a game runs without a hand-over.
 ERPLIBRE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "..", ".."))
-# Hands the deck over from the ERPLibre Home service to a game, then back.
+# Hands the deck over from the ERPLibre Home Stream Deck service
+# (erplibre-home-streamdeck.service) to a game, then back.
 HANDOVER = os.path.join(
-    ERPLIBRE_DIR, "script", "install", "erplibre_home_handover.sh"
+    ERPLIBRE_DIR, "script", "install", "erplibre_home_streamdeck_handover.sh"
 )
 SETTINGS_LIB = os.path.join(
     ERPLIBRE_DIR, "script", "install", "erplibre_home_settings.sh"
@@ -51,9 +52,16 @@ def _games_refusal():
     ERPLibre's settings library, the one make and the hand-over read: a
     change counts without restarting the gallery. A read that fails (bash
     missing, timeout) refuses too, like an unknown value, and the line names
-    the failure. Without ERPLibre, there is no setting: None."""
+    the failure. Without ERPLibre, there is no setting: None. An ERPLibre
+    whose settings library is there without HANDOVER refuses as well: a
+    game would take the deck from under the running service."""
     if not os.path.isfile(SETTINGS_LIB):
         return None
+    if not os.path.isfile(HANDOVER):
+        return (
+            f"no hand-over at {HANDOVER}:"
+            f" ERPLibre and the games must be updated together"
+        )
     try:
         fini = subprocess.run(
             [
@@ -152,9 +160,10 @@ def _game_bash_cmd(game_file):
     user types "r" + Enter at the end-of-game prompt, which avoids
     re-picking it from the gallery; any other answer, or a closed stdin,
     ends it. Inside ERPLibre, the whole loop runs inside one
-    erplibre_home_handover.sh: the deck service stops before the first game
-    and comes back once, when the loop ends, not between two rounds. Without
-    ERPLibre, the loop runs on its own, from the games' directory.
+    erplibre_home_streamdeck_handover.sh: the deck service stops before the
+    first game and comes back once, when the loop ends, not between two
+    rounds. Without ERPLibre, the loop runs on its own, from the games'
+    directory.
     """
     loop = (
         f"while true; do "

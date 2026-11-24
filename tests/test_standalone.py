@@ -81,7 +81,7 @@ class TestGalleryAlone(Copy):
         # games/ at <tmp>/a/b/c/games: ERPLibre's root is <tmp>/a.
         install = self.tmp / "a/script/install"
         install.mkdir(parents=True)
-        (install / "erplibre_home_handover.sh").write_text("")
+        (install / "erplibre_home_streamdeck_handover.sh").write_text("")
         (install / "erplibre_home_settings.sh").write_text(
             "deck_games_enabled() { false; }\n"
             "deck_games_message() { echo 'games are off'; }\n"
@@ -91,9 +91,26 @@ class TestGalleryAlone(Copy):
         words = shlex.split(gallery._game_bash_cmd("/x/game_demo.py"))
         self.assertEqual(
             ["cd", str(self.tmp / "a"), "&&",
-             str(install / "erplibre_home_handover.sh"), "bash", "-c"],
+             str(install / "erplibre_home_streamdeck_handover.sh"),
+             "bash", "-c"],
             words[:6],
         )
+
+    def test_inside_erplibre_without_the_hand_over(self):
+        """An ERPLibre that lacks the hand-over this contract names refuses
+        the games, even with GAMES on: the game never runs beside the
+        service."""
+        install = self.tmp / "a/script/install"
+        install.mkdir(parents=True)
+        (install / "erplibre_home_settings.sh").write_text(
+            "deck_games_enabled() { true; }\n"
+        )
+        gallery = self.gallery()
+        refus = gallery._games_refusal()
+        self.assertIn(
+            str(install / "erplibre_home_streamdeck_handover.sh"), refus
+        )
+        self.assertEqual(1, len(refus.splitlines()))
 
 
 if __name__ == "__main__":

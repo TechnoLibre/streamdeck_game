@@ -38,8 +38,9 @@ LEGACY_SAVE_DIR = os.path.join(
 EPILOG = """\
 Without an option, the game opens the Stream Deck and plays until the
 player quits. The gallery (gallery_server.py) runs it in a terminal.
-Inside ERPLibre, the gallery and the TODO menu first stop the ERPLibre
-Home deck service, which takes the deck back when the game ends."""
+Inside ERPLibre, the gallery, the TODO menu and make streamdeck_<id> first
+stop the ERPLibre Home deck service, which takes the deck back when the
+game ends."""
 
 
 def parser(doc):

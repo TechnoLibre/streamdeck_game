@@ -38,7 +38,9 @@ tests of both sides check it.
      carries `description_fr`). Readers ignore unknown keys.
 4. **Playing.** Without an option the game opens the first Stream Deck,
    plays, and exits when the player quits. It never takes the deck lock:
-   the hand-over holds it around the game and passes its exit code on.
+   inside ERPLibre, the TODO menu, `make streamdeck_<id>` and the gallery
+   each run it through the hand-over, which holds the lock around the game
+   and passes its exit code on.
 5. **Gallery.** `gallery_server.py` serves on 127.0.0.1, port 8042, and,
    inside ERPLibre, launches every game through ERPLibre's hand-over. It
    answers 403 to a request whose Host is not `localhost` or `127.0.0.1`

@@ -37,6 +37,7 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": True,
     "description": "Mix RGB with 3 dials to match target color.",
+    "description_fr": "Mixe RVB avec 3 dials pour matcher la couleur cible.",
     "icon": "mixer"
 }
 

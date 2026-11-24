@@ -33,6 +33,7 @@ GAME_META = {
     "multiplayer": True,
     "sdplus": False,
     "description": "Drop pieces, get 4 in a row! 1P vs AI or 2P.",
+    "description_fr": "Lâche des pièces, aligne-en 4! 1P vs IA ou 2P.",
     "icon": "c4"
 }
 

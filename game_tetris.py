@@ -36,6 +36,9 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": True,
     "description": "Pieces fall from right to left. SD+ touchscreen mode!",
+    "description_fr": (
+        "Les pièces tombent de droite à gauche. Mode écran tactile SD+!"
+    ),
     "icon": "tetris"
 }
 

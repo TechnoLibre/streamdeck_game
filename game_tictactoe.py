@@ -35,6 +35,7 @@ GAME_META = {
     "multiplayer": True,
     "sdplus": False,
     "description": "Tic-Tac-Toe on 3x3 grid. 1P hot seat or 2P.",
+    "description_fr": "Morpion sur grille 3x3. 1P hot seat ou 2P.",
     "icon": "ttt"
 }
 

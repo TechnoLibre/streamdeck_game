@@ -34,6 +34,7 @@ GAME_META = {
     "multiplayer": True,
     "sdplus": False,
     "description": "Hit the green button ASAP! 5 rounds. 1P or 2P.",
+    "description_fr": "Tape le bouton vert vite! 5 rounds. 1P ou 2P.",
     "icon": "reaction"
 }
 

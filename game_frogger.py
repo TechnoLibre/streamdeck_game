@@ -34,6 +34,7 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": False,
     "description": "Cross traffic lanes to reach the top!",
+    "description_fr": "Traverse la route pour atteindre le haut!",
     "icon": "frogger"
 }
 

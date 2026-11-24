@@ -39,6 +39,7 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": True,
     "description": "Play piano keys on bottom row. Dial = octave.",
+    "description_fr": "Joue du piano sur la rangée du bas. Dial = octave.",
     "icon": "piano"
 }
 

@@ -34,6 +34,7 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": False,
     "description": "Slide tiles to order them 1 to N. Classic puzzle!",
+    "description_fr": "Glisse les tuiles pour les ordonner 1 à N. Classique!",
     "icon": "taquin"
 }
 

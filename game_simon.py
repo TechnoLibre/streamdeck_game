@@ -34,6 +34,7 @@ GAME_META = {
     "multiplayer": True,
     "sdplus": False,
     "description": "Memorize and repeat the light sequence! 1P or 2P.",
+    "description_fr": "Mémorise et reproduis la séquence lumineuse! 1P ou 2P.",
     "icon": "simon"
 }
 

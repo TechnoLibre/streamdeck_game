@@ -34,6 +34,9 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": False,
     "description": "Guess 1-100 with hot/cold colors. Fewer tries = better!",
+    "description_fr": (
+        "Devine 1-100 avec couleurs chaud/froid. Moins d'essais = mieux!"
+    ),
     "icon": "number"
 }
 

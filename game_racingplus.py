@@ -36,6 +36,9 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": True,
     "description": "Side-scrolling race on touchscreen! Dial = steering.",
+    "description_fr": (
+        "Course à défilement latéral sur écran tactile! Dial = volant."
+    ),
     "icon": "racing"
 }
 

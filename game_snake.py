@@ -35,6 +35,9 @@ GAME_META = {
     "multiplayer": True,
     "sdplus": False,
     "description": "Classic snake. Eat, grow, don't crash! 1P or 2P VS.",
+    "description_fr": (
+        "Snake classique. Mange, grandit, crash pas! 1P ou 2P VS."
+    ),
     "icon": "snake"
 }
 

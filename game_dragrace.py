@@ -35,6 +35,7 @@ GAME_META = {
     "multiplayer": True,
     "sdplus": False,
     "description": "Shift gears at the right RPM! 1P or 2P.",
+    "description_fr": "Passe les vitesses au bon régime! 1P ou 2P.",
     "icon": "drag"
 }
 

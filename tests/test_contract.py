@@ -14,6 +14,7 @@ lock would leave its file there.
     python3 -m unittest discover -s tests
 """
 
+import ast
 import concurrent.futures
 import importlib.util
 import json
@@ -90,6 +91,20 @@ IMPORTABLE_HARDWARE = {
 def games():
     """The game files of the repository root, sorted."""
     return sorted(ROOT.glob("game_*.py"))
+
+
+def static_meta(game):
+    """GAME_META of `game` read without running it, as ERPLibre's TODO menu
+    reads it: the value of the module-level assignment, which must be a
+    literal. None when there is no such assignment."""
+    tree = ast.parse(game.read_text(encoding="utf-8"))
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and any(
+            isinstance(t, ast.Name) and t.id == "GAME_META"
+            for t in node.targets
+        ):
+            return ast.literal_eval(node.value)
+    return None
 
 
 def run_without_hardware(script, *args, fakes=None):
@@ -266,6 +281,19 @@ class TestMeta(unittest.TestCase):
                 self.assertLessEqual(REQUIRED_META, set(meta))
                 self.assertIsInstance(meta["multiplayer"], bool)
                 self.assertIsInstance(meta["sdplus"], bool)
+                self.assertEqual(static_meta(ROOT / name), meta)
+
+    def test_every_game_describes_itself_in_french(self):
+        """description_fr, optional for a reader, is in every game here;
+        description stays the English one."""
+        for game in games():
+            with self.subTest(game=game.name):
+                meta = static_meta(game)
+                self.assertIsInstance(meta.get("description_fr"), str)
+                self.assertTrue(meta["description_fr"].strip())
+                self.assertNotEqual(
+                    meta["description"], meta["description_fr"]
+                )
 
     def test_meta_answers_wherever_it_stands_among_the_options(self):
         for game, args in (

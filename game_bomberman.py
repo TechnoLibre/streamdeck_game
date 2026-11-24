@@ -36,6 +36,7 @@ GAME_META = {
     "multiplayer": True,
     "sdplus": False,
     "description": "Place bombs, destroy walls, survive! 1P or 2P.",
+    "description_fr": "Pose des bombes, détruis les murs, survie! 1P ou 2P.",
     "icon": "bomberman"
 }
 

@@ -34,6 +34,9 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": False,
     "description": "Dodge obstacles on a scrolling road! Speed increases.",
+    "description_fr": (
+        "Esquive les obstacles sur une route qui défile! Vitesse croissante."
+    ),
     "icon": "racer"
 }
 

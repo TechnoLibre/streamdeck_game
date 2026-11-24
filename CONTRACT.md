@@ -1,6 +1,6 @@
 # Contract between the games and ERPLibre
 
-**Contract version: 3.0**
+**Contract version: 3.1**
 
 The games run on their own (see `README.md`). ERPLibre also clones this
 repository at `script/stream_deck/games/`, by Google Repo or by
@@ -18,9 +18,12 @@ tests of both sides check it.
    `game_*.py` is a game: the TODO menu, the make targets and the gallery
    list them by that glob. `games_cli.py` and `gallery_server.py` sit next
    to them.
-2. **Description.** The first line of a game's module docstring describes
-   it in one sentence; the TODO menu shows it when its own translations
-   have no `game_<id>` entry.
+2. **Description.** A game assigns `GAME_META` once, at module level, to
+   a literal dict, which the TODO menu reads without running the game
+   (`ast.literal_eval`). The menu shows `description_fr` when its language
+   is French and `description` otherwise. When neither is readable, it
+   shows the first line of the module docstring, which describes the game
+   in one sentence.
 3. **Command line,** through `games_cli.parser(__doc__)`:
    - `-h` and `--help` print the usage on stdout and exit 0; an unknown
      argument prints it on stderr and exits 2. Both happen before the PIL
@@ -29,8 +32,10 @@ tests of both sides check it.
      after those imports but without opening a deck. Required keys:
      `name`, `category`, `multiplayer`, `sdplus`, `description`, `icon`.
      Optional: `saves` (the game keeps saves), `section` (`erplibre`
-     files the entry under the extension's ERPLibre tools). Readers ignore
-     unknown keys.
+     files the entry under the extension's ERPLibre tools),
+     `description_<lang>` (the description in the language of ISO 639-1
+     code `<lang>`, `description` being the English one; every game
+     carries `description_fr`). Readers ignore unknown keys.
 4. **Playing.** Without an option the game opens the first Stream Deck,
    plays, and exits when the player quits. It never takes the deck lock:
    the hand-over holds it around the game and passes its exit code on.
@@ -88,6 +93,9 @@ required `--meta` key, a moved or renamed file, a new exit code, a route
 that changes its answer. An optional addition bumps MINOR. ERPLibre's tests
 fail when the MAJOR it records differs from this one.
 
+- **3.1:** the optional `--meta` key `description_<lang>`, with
+  `description_fr` in every game; `GAME_META` is a literal the TODO menu
+  reads without running the game.
 - **3.0:** the hand-over is
   `script/install/erplibre_home_streamdeck_handover.sh`, formerly
   `erplibre_home_handover.sh`; inside ERPLibre, the gallery refuses the

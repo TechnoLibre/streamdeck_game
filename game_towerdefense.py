@@ -34,6 +34,9 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": False,
     "description": "Place towers to stop enemies crossing! Survive 5 waves.",
+    "description_fr": (
+        "Place des tours pour bloquer les ennemis! Survie 5 vagues."
+    ),
     "icon": "tower"
 }
 

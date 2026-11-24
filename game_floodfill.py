@@ -35,6 +35,7 @@ GAME_META = {
     "multiplayer": True,
     "sdplus": False,
     "description": "Pick colors to flood-fill. Fill the grid! 1P or 2P.",
+    "description_fr": "Choisis des couleurs pour remplir la grille! 1P ou 2P.",
     "icon": "flood"
 }
 

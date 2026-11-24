@@ -36,6 +36,9 @@ GAME_META = {
     "multiplayer": True,
     "sdplus": False,
     "description": "Find hidden ships! Hit = keep turn. 1P or 2P.",
+    "description_fr": (
+        "Trouve les bateaux cachés! Touché = garde ton tour. 1P ou 2P."
+    ),
     "icon": "ship"
 }
 

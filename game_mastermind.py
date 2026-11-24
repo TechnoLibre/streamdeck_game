@@ -34,6 +34,9 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": False,
     "description": "Guess the secret color code. Feedback after each try.",
+    "description_fr": (
+        "Devine le code couleur secret. Feedback après chaque essai."
+    ),
     "icon": "master"
 }
 

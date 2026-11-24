@@ -35,6 +35,7 @@ GAME_META = {
     "multiplayer": True,
     "sdplus": False,
     "description": "Toggle button + neighbors. Turn all off! Coop.",
+    "description_fr": "Toggle bouton + voisins. Éteins tout! Coop.",
     "icon": "lights"
 }
 

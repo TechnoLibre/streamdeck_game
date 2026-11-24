@@ -35,6 +35,9 @@ GAME_META = {
     "multiplayer": True,
     "sdplus": False,
     "description": "Hit moles before they vanish! 30s. 1P or 2P VS.",
+    "description_fr": (
+        "Tape les taupes avant qu'elles disparaissent! 30s. 1P ou 2P VS."
+    ),
     "icon": "mole"
 }
 

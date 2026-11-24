@@ -37,6 +37,9 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": True,
     "description": "Turn 4 dials to guess the combo. Hot/cold hints.",
+    "description_fr": (
+        "Tourne 4 dials pour deviner la combo. Indices chaud/froid."
+    ),
     "icon": "safe"
 }
 

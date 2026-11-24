@@ -34,6 +34,9 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": False,
     "description": "Conway's Game of Life. Toggle cells, play/pause.",
+    "description_fr": (
+        "Jeu de la Vie de Conway. Toggle les cellules, play/pause."
+    ),
     "icon": "life"
 }
 

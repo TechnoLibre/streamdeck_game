@@ -34,6 +34,9 @@ GAME_META = {
     "multiplayer": True,
     "sdplus": False,
     "description": "Place pieces to flip opponent's. Most pieces wins!",
+    "description_fr": (
+        "Place des pièces pour retourner celles de l'adversaire. Le plus de pièces gagne!"
+    ),
     "icon": "reversi"
 }
 

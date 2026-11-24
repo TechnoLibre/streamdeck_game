@@ -37,6 +37,7 @@ GAME_META = {
     "multiplayer": True,
     "sdplus": True,
     "description": "Pong with SD+ touchscreen support. 1P vs AI or 2P.",
+    "description_fr": "Pong avec support écran tactile SD+. 1P vs IA ou 2P.",
     "icon": "pong"
 }
 

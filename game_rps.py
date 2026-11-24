@@ -34,6 +34,7 @@ GAME_META = {
     "multiplayer": True,
     "sdplus": False,
     "description": "Rock Paper Scissors! Best of 5. 1P or 2P.",
+    "description_fr": "Pierre Papier Ciseaux! Best of 5. 1P ou 2P.",
     "icon": "rps"
 }
 

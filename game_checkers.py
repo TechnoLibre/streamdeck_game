@@ -34,6 +34,7 @@ GAME_META = {
     "multiplayer": True,
     "sdplus": False,
     "description": "Simplified checkers. Jump to capture! 1P or 2P.",
+    "description_fr": "Dames simplifiées. Saute pour capturer! 1P ou 2P.",
     "icon": "checkers"
 }
 

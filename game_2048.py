@@ -34,6 +34,9 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": False,
     "description": "Merge tiles to reach 2048! Corner buttons = directions.",
+    "description_fr": (
+        "Fusionne les tuiles pour atteindre 2048! Coins = directions."
+    ),
     "icon": "n2048"
 }
 

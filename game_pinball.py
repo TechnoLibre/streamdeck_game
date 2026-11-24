@@ -42,6 +42,9 @@ GAME_META = {
     "description": (
         "Vertical pinball (rotate deck 90°): flip the ball, hit bumpers."
     ),
+    "description_fr": (
+        "Flipper vertical (deck tourné de 90°) : relance la balle, touche les bumpers."
+    ),
     "icon": "pinball",
 }
 

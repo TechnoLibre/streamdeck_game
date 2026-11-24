@@ -36,6 +36,9 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": True,
     "description": "Break bricks! SD+ touchscreen, items, multi-ball, ammo.",
+    "description_fr": (
+        "Casse les briques! Écran tactile SD+, items, multi-balle."
+    ),
     "icon": "breakout"
 }
 

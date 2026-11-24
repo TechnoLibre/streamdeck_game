@@ -35,6 +35,9 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": True,
     "description": "Eat dots, power pellets, eat ghosts! SD+ touchscreen.",
+    "description_fr": (
+        "Mange les points, power pellets, mange les fantômes! SD+."
+    ),
     "icon": "pacman"
 }
 

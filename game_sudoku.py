@@ -35,6 +35,9 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": False,
     "description": "Fill the 3x3 grid. No repeats in rows/columns!",
+    "description_fr": (
+        "Remplis la grille 3x3. Pas de répétitions en lignes/colonnes!"
+    ),
     "icon": "sudoku"
 }
 

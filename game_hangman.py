@@ -51,6 +51,9 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": True,
     "description": "Guess the word, one letter at a time. 6 wrong = over.",
+    "description_fr": (
+        "Devine le mot, une lettre à la fois. 6 erreurs = perdu."
+    ),
     "icon": "hangman"
 }
 

@@ -33,6 +33,9 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": False,
     "description": "Push boxes onto targets. Think before you move!",
+    "description_fr": (
+        "Pousse les boîtes sur les cibles. Réfléchis avant de bouger!"
+    ),
     "icon": "sokoban"
 }
 

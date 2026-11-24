@@ -37,6 +37,9 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": True,
     "description": "Cast, wait for bite, reel in! Don't snap the line.",
+    "description_fr": (
+        "Lance, attends la touche, mouline! Ne casse pas la ligne."
+    ),
     "icon": "fish"
 }
 

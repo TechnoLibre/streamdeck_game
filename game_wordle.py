@@ -35,6 +35,9 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": False,
     "description": "Guess a 5-letter word. Green/yellow/grey hints. 6 tries.",
+    "description_fr": (
+        "Devine un mot de 5 lettres. Indices vert/jaune/gris. 6 essais."
+    ),
     "icon": "wordle"
 }
 

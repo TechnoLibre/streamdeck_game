@@ -36,6 +36,7 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": True,
     "description": "Spin reels with dials, stop to match symbols!",
+    "description_fr": "Tourne les roues avec les dials, stoppe pour matcher!",
     "icon": "slots"
 }
 

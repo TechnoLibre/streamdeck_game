@@ -69,6 +69,7 @@ GAME_META = {
     "multiplayer": True,
     "sdplus": False,
     "description": "Classic minesweeper (1P) or mine hunter VS (2P).",
+    "description_fr": "Démineur classique (1P) ou chasseur de mines VS (2P).",
     "icon": "mine"
 }
 

@@ -33,6 +33,7 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": False,
     "description": "Press any button to flap up. Avoid obstacles!",
+    "description_fr": "Appuie pour monter. Évite les obstacles!",
     "icon": "flappy"
 }
 

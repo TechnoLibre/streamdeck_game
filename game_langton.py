@@ -34,6 +34,7 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": False,
     "description": "Langton's Ant automaton. Watch emergent patterns!",
+    "description_fr": "Automate de Langton. Observe les motifs émergents!",
     "icon": "ant"
 }
 

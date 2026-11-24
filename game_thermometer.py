@@ -36,6 +36,9 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": True,
     "description": "Guess the secret temperature. Hot/cold bar on screen.",
+    "description_fr": (
+        "Devine la température secrète. Barre chaud/froid à l'écran."
+    ),
     "icon": "thermo"
 }
 

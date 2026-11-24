@@ -35,6 +35,9 @@ GAME_META = {
     "multiplayer": True,
     "sdplus": False,
     "description": "Flip cards, find matching pairs! 1P or 2P race.",
+    "description_fr": (
+        "Retourne les cartes, trouve les paires! 1P ou 2P course."
+    ),
     "icon": "match"
 }
 

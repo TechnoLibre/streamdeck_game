@@ -42,6 +42,7 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": True,
     "description": "Scratch vinyl with dials. Waveforms on touchscreen.",
+    "description_fr": "Scratche du vinyl avec les dials. Waveforms sur écran.",
     "icon": "dj",
     "saves": True
 }

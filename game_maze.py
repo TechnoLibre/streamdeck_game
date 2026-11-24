@@ -34,6 +34,9 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": False,
     "description": "Navigate a random maze from top-left to bottom-right.",
+    "description_fr": (
+        "Navigue un labyrinthe aléatoire du coin haut-gauche au bas-droite."
+    ),
     "icon": "maze"
 }
 

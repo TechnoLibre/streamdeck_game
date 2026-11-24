@@ -34,6 +34,7 @@ GAME_META = {
     "multiplayer": False,
     "sdplus": False,
     "description": "Shoot aliens before they reach the bottom!",
+    "description_fr": "Tire sur les aliens avant qu'ils atteignent le bas!",
     "icon": "invaders"
 }
 
